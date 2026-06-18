@@ -3,7 +3,8 @@ from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from werkzeug.security import check_password_hash, generate_password_hash
-from app import db
+from flask_login import UserMixin
+from app import db, login
 
 class User(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
@@ -31,3 +32,7 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+@login.user_loader
+def load_user(id):
+    return db.session.get(User, int(id))
