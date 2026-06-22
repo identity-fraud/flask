@@ -4,6 +4,7 @@ import sqlalchemy as sa
 from urllib.parse import urlsplit
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
+from flask_login import UserMixin
 from app.models import User
 
 @app.route('/')
@@ -20,7 +21,7 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    return render_template('index.html', title='Home', posts=posts)
+    return render_template('index.html', title='Home', posts=posts) 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -39,10 +40,19 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = db.first_or_404(sa.select(User).where(User.username == username))
+    posts = [
+        {'author': user, 'body': 'Test post #1'},
+        {'author': user, 'body': 'Test post #2'}
+    ]
+    return render_template('user.html', user=user, posts=posts)
 
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('logout'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
