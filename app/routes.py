@@ -21,7 +21,7 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    return render_template('index.html', title='Home', posts=posts) 
+    return render_template('index.html', title='Home', posts=posts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -50,9 +50,10 @@ def user(username):
     ]
     return render_template('user.html', user=user, posts=posts)
 
+@app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('logout'))
+    return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
